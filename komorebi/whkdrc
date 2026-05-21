@@ -1,0 +1,72 @@
+.shell pwsh
+
+# Workspace switching
+alt + 1 : komorebic focus-workspace 0
+alt + 2 : komorebic focus-workspace 1
+alt + 3 : komorebic focus-workspace 2
+alt + 4 : komorebic focus-workspace 3
+alt + 5 : komorebic focus-workspace 4
+alt + 6 : komorebic focus-workspace 5
+alt + 7 : komorebic focus-workspace 6
+
+# Move window to workspace
+alt + shift + 1 : komorebic move-to-workspace 0
+alt + shift + 2 : komorebic move-to-workspace 1
+alt + shift + 3 : komorebic move-to-workspace 2
+alt + shift + 4 : komorebic move-to-workspace 3
+alt + shift + 5 : komorebic move-to-workspace 4
+alt + shift + 6 : komorebic move-to-workspace 5
+alt + shift + 7 : komorebic move-to-workspace 6
+
+# Focus window
+alt + h : komorebic focus left
+alt + j : komorebic focus down
+alt + k : komorebic focus up
+alt + l : komorebic focus right
+
+# Move window
+alt + shift + h : komorebic move left
+alt + shift + j : komorebic move down
+alt + shift + k : komorebic move up
+alt + shift + l : komorebic move right
+
+# Resize window
+alt + control + h : komorebic resize left
+alt + control + j : komorebic resize down
+alt + control + k : komorebic resize up
+alt + control + l : komorebic resize right
+
+# Layout
+alt + v : komorebic change-layout bsp
+alt + shift + v : komorebic change-layout vertical-stack
+alt + m : komorebic toggle-monocle
+alt + f : komorebic toggle-float
+alt + shift + f : komorebic float-rule add
+alt + x : komorebic flip-layout horizontal
+alt + shift + x : komorebic flip-layout vertical
+
+# Stack navigation
+alt + oem_4 : komorebic cycle-focus previous
+alt + oem_6 : komorebic cycle-focus next
+alt + shift + oem_4 : komorebic cycle-stack previous
+alt + shift + oem_6 : komorebic cycle-stack next
+
+# Window
+alt + return : komorebic promote
+alt + q : komorebic close
+alt + shift + q : komorebic force-focus
+alt + r : komorebic retile
+alt + shift + space : komorebic toggle-pause
+
+# Send to workspace and follow
+alt + control + 1 : komorebic send-to-workspace 0
+alt + control + 2 : komorebic send-to-workspace 1
+alt + control + 3 : komorebic send-to-workspace 2
+alt + control + 4 : komorebic send-to-workspace 3
+alt + control + 5 : komorebic send-to-workspace 4
+alt + control + 6 : komorebic send-to-workspace 5
+alt + control + 7 : komorebic send-to-workspace 6
+
+# Workspace management
+alt + s : komorebic save-workspace-layout
+alt + shift + s : komorebic load-workspace-layout
