@@ -36,7 +36,7 @@
   "border_offset": -1,
   "default_container_padding": 4,
   "default_workspace_padding": 4,
-  "border_style": "System",
+  "border_style": "Square",
   "border_colours": {
     "single": "#89B4FA",
     "stack": "#F38BA8",

@@ -1,8 +1,10 @@
 # MyConfig
 
-Personal Zsh configuration — a clean, portable `.zshrc` that works across Linux and macOS.
+Personal dotfiles — Zsh shell config and [komorebi](https://github.com/LGUG2Z/komorebi) tiling window manager config for Windows.
 
 ## Quick Start
+
+### Zsh
 
 ```bash
 git clone git@github.com:microfatrat/myconfig.git ~/myconfig
@@ -15,7 +17,15 @@ Or with GNU stow:
 stow -t ~ -d ~/myconfig .
 ```
 
-## What's Inside
+### Komorebi
+
+```powershell
+git clone git@github.com:microfatrat/myconfig.git "$env:USERPROFILE\myconfig"
+# Then symlink or copy files as described in the Komorebi > Deploy section below
+```
+
+---
+## Zsh
 
 ### Shell Options
 
@@ -77,10 +87,90 @@ The following plugins are auto-loaded if installed:
 
 Checked paths (in order): `/usr/share/zsh/plugins`, `/usr/local/share`, `/usr/share`
 
-## Requirements
+### Requirements
 
 - Zsh 5.0+
-- For plugins: install via your package manager (e.g., `apt install zsh-syntax-highlighting zsh-autosuggestions`)
+- For plugins: `apt install zsh-syntax-highlighting zsh-autosuggestions`
+
+## Komorebi
+
+### Requirements
+
+- [komorebi](https://github.com/LGUG2Z/komorebi) (via `winget` or `scoop`)
+- [komorebi-bar](https://github.com/LGUG2Z/komorebi-bar) (optional, for the status bar)
+- [whkd](https://github.com/LGUG2Z/whkd) (for hotkey bindings)
+
+### Deploy
+
+```powershell
+# Symlink config into %USERPROFILE% (requires admin / Developer Mode)
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\komorebi.json" -Target "$env:USERPROFILE\myconfig\komorebi\komorebi.json" -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\komorebi.bar.json" -Target "$env:USERPROFILE\myconfig\komorebi\komorebi.bar.json" -Force
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\whkdrc" -Target "$env:USERPROFILE\myconfig\komorebi\whkdrc" -Force
+```
+
+Or simply copy the files if symlinks aren't available.
+
+### komorebi.json — Window Manager
+
+| Setting | Value |
+|---|---|
+| Layout | BSP (Binary Space Partition) |
+| Border | Enabled, width 4px, offset -1, style `Square` |
+| Padding | Container 4px, workspace 4px |
+| Animation | 120ms, EaseInOutSine, 60fps |
+| Cross-monitor move | Swap |
+
+**Workspaces:**
+
+| # | Name | Layout Rules |
+|---|---|---|
+| 1 | home | — |
+| 2 | term | — |
+| 3 | code | `Zed.exe` |
+| 4 | web | `msedge.exe` |
+| 5 | chat | `QQ.exe`, `WeChat.exe` |
+| 6 | game | — |
+| 7 | misc | — |
+
+**Border colours:**
+
+| State | Color |
+|---|---|
+| Focused (single) | `#89B4FA` (blue) |
+| Stack | `#F38BA8` (pink) |
+| Monocle | `#A6E3A1` (green) |
+| Unfocused | `#585B70` (grey) |
+
+**Floating apps:** Task Manager, Settings, Calculator, Snipping Tool, Steam popups.
+
+### komorebi.bar.json — Status Bar
+
+- **Font:** JetBrains Mono, Base16-Ashes theme
+- **Left:** Workspace indicators, layout, focused window (with icon)
+- **Right:** Media, Storage, Memory, Network (with activity), Date, Time (24h)
+
+### whkdrc — Hotkeys
+
+| Shortcut | Action |
+|---|---|
+| `Alt + 1-7` | Switch workspace |
+| `Alt + Shift + 1-7` | Move window to workspace |
+| `Alt + H/J/K/L` | Focus left/down/up/right |
+| `Alt + Shift + H/J/K/L` | Move window |
+| `Alt + Ctrl + H/J/K/L` | Resize window |
+| `Alt + V` | BSP layout |
+| `Alt + Shift + V` | Vertical stack |
+| `Alt + M` | Toggle monocle |
+| `Alt + F` | Toggle float |
+| `Alt + [` / `Alt + ]` | Cycle focus prev/next |
+| `Alt + Shift + [` / `]` | Cycle stack prev/next |
+| `Alt + Return` | Promote window |
+| `Alt + Q` | Close window |
+| `Alt + R` | Retile |
+| `Alt + Shift + Space` | Pause/Resume tiling |
+| `Alt + X` / `Alt + Shift + X` | Flip layout horizontal/vertical |
+| `Alt + Ctrl + 1-7` | Send to workspace & follow |
 
 ## License
 
