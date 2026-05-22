@@ -1,0 +1,221 @@
+# ============================================================
+# theme.toml — Yazi 主题 / 颜色方案配置文件
+# 此文件覆盖 theme-dark.toml 和 theme-light.toml 中的对应设置
+# Yazi 根据终端的明暗模式自动加载对应的预设主题
+# 推荐使用 flavor 引用现成主题: https://github.com/yazi-rs/flavors
+# 默认配置: https://github.com/sxyazi/yazi/tree/shipped/yazi-config/preset
+# ============================================================
+
+# === 预设主题引用 (可选) ===
+[flavor]
+# 暗色模式使用的 flavor 名称
+dark  = ""
+# 亮色模式使用的 flavor 名称
+light = ""
+
+# === 应用整体 ===
+[app]
+# terminal background color (requires OSC 11 support)
+overall = {}
+# 示例: overall = { bg = "#1e1e2e" }
+
+# === 文件管理器 ===
+[mgr]
+# 当前工作目录文本
+cwd = { fg = "#81c8be" }
+
+# 查找关键词高亮
+find_keyword  = { fg = "yellow", bold = true, italic = true, underline = true }
+# 查找位置高亮
+find_position = { fg = "#c4a0d4", bg = "reset", bold = true, italic = true }
+
+# 符号链接目标
+symlink_target = { italic = true }
+
+# 文件标记颜色
+marker_copied   = { fg = "lightgreen",  bg = "lightgreen" }
+marker_cut      = { fg = "lightred",    bg = "lightred" }
+marker_marked   = { fg = "#94e2d5",     bg = "#94e2d5" }
+marker_selected = { fg = "lightyellow", bg = "lightyellow" }
+marker_symbol   = "│"
+
+# 文件计数标记
+count_copied   = { fg = "white", bg = "green" }
+count_cut      = { fg = "white", bg = "red" }
+count_selected = { fg = "black", bg = "yellow" }
+
+# 面板边框
+border_symbol = "│"
+border_style  = { fg = "gray" }
+
+# 语法高亮主题 (Syntect 主题名)
+syntect_theme = ""
+
+# === 标签页 ===
+[tabs]
+active   = { bg = "#7da6d9", bold = true }
+inactive = { fg = "#7da6d9", bg = "gray" }
+
+# 标签分隔符
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+# === 模式指示 ===
+[mode]
+# 普通模式
+normal_main = { bg = "#7da6d9", bold = true }
+normal_alt  = { fg = "#7da6d9", bg = "gray" }
+
+# 选择模式
+select_main = { bg = "red", bold = true }
+select_alt  = { fg = "red", bg = "gray" }
+
+# 取消选择模式
+unset_main = { bg = "red", bold = true }
+unset_alt  = { fg = "red", bg = "gray" }
+
+# === 文件指示器 (hovered 高亮) ===
+[indicator]
+parent  = { reversed = true }
+current = { reversed = true }
+preview = { underline = true }
+padding = { open = "", close = "" }
+
+# === 状态栏 ===
+[status]
+overall   = {}
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+# 权限指示
+perm_sep   = { fg = "darkgray" }
+perm_type  = { fg = "green" }
+perm_read  = { fg = "yellow" }
+perm_write = { fg = "red" }
+perm_exec  = { fg = "#81c8be" }
+
+# 进度条
+progress_label  = { bold = true }
+progress_normal = { fg = "green", bg = "black" }
+progress_error  = { fg = "yellow", bg = "red" }
+
+# === 候选面板 (Which key) ===
+[which]
+cols            = 3
+mask            = { bg = "black" }
+cand            = { fg = "#94e2d5" }
+rest            = { fg = "darkgray" }
+desc            = { fg = "#cba6f7" }
+separator       = "  "
+separator_style = { fg = "darkgray" }
+
+# === 确认对话框 ===
+[confirm]
+border     = { fg = "#7da6d9" }
+title      = { fg = "#7da6d9" }
+body       = {}
+list       = {}
+btn_yes    = { reversed = true }
+btn_no     = {}
+btn_labels = [ "  [Y]es  ", "  (N)o  " ]
+
+# === 文件信息面板 (Spotter) ===
+[spot]
+border = { fg = "#7da6d9" }
+title  = { fg = "#7da6d9" }
+
+# 表格
+tbl_col  = { fg = "#7da6d9" }
+tbl_cell = { fg = "yellow", reversed = true }
+
+# === 通知 ===
+[notify]
+title_info  = { fg = "green" }
+title_warn  = { fg = "yellow" }
+title_error = { fg = "red" }
+
+# 图标
+icon_info  = ""
+icon_warn  = ""
+icon_error = ""
+
+# === 选择器 ===
+[pick]
+border   = { fg = "#7da6d9" }
+active   = { fg = "#c4a0d4", bold = true }
+inactive = {}
+
+# === 输入框 ===
+[input]
+border   = { fg = "#7da6d9" }
+title    = {}
+value    = {}
+selected = { reversed = true }
+
+# === 补全 ===
+[cmp]
+border   = { fg = "#7da6d9" }
+active   = { reversed = true }
+inactive = {}
+
+# 图标
+icon_file    = ""
+icon_folder  = ""
+icon_command = ""
+
+# === 任务管理器 ===
+[tasks]
+border  = { fg = "#7da6d9" }
+title   = {}
+hovered = { fg = "#c4a0d4", bold = true }
+
+# === 帮助菜单 ===
+[help]
+on      = { fg = "#81c8be" }
+run     = { fg = "#c4a0d4" }
+desc    = {}
+hovered = { reversed = true, bold = true }
+footer  = { fg = "black", bg = "white" }
+
+# === 文件类型着色规则 ===
+[filetype]
+rules = [
+	# 图片 — 黄色
+	{ mime = "image/*", fg = "yellow" },
+	# 媒体 — 品红
+	{ mime = "{audio,video}/*", fg = "#c4a0d4" },
+	# 压缩包 — 红色
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
+	# 文档 — 青色
+	{ mime = "application/{pdf,doc,rtf}", fg = "#81c8be" },
+	# 虚拟文件系统 — 灰色
+	{ mime = "vfs/{absent,stale}", fg = "gray" },
+	# 特殊文件
+	{ url = "*", is = "orphan", bg = "red" },
+	{ url = "*", is = "exec"  , fg = "green" },
+	# 临时/错误文件
+	{ url = "*", is = "dummy", bg = "red" },
+	{ url = "*/", is = "dummy", bg = "red" },
+	# 目录 — 蓝色
+	{ url = "*/", fg = "#7da6d9" },
+]
+
+# === 图标 ===
+[icon]
+prepend_dirs = [
+	{ name = ".config", text = "", fg = "#ff9800" },
+	{ name = ".git", text = "", fg = "#7da6d9" },
+	{ name = ".github", text = "", fg = "#7da6d9" },
+	{ name = "Desktop", text = "", fg = "#7da6d9" },
+	{ name = "Documents", text = "", fg = "#7da6d9" },
+	{ name = "Downloads", text = "", fg = "#7da6d9" },
+	{ name = "Music", text = "", fg = "#7da6d9" },
+	{ name = "Pictures", text = "", fg = "#7da6d9" },
+	{ name = "Public", text = "", fg = "#7da6d9" },
+	{ name = "Videos", text = "", fg = "#7da6d9" },
+]
+prepend_conds = [
+	{ if = "dir & hovered", text = "", fg = "#7da6d9" },
+	{ if = "dir", text = "", fg = "#7da6d9" },
+	{ if = "exec", text = "", fg = "#81c8be" },
+]

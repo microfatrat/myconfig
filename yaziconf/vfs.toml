@@ -1,0 +1,52 @@
+# ============================================================
+# vfs.toml — Yazi 虚拟文件系统 (VFS) 配置文件
+# 在此注册远程服务器 (SFTP) 等服务，然后通过 yazi sftp://my-server 访问
+# 默认配置: https://github.com/sxyazi/yazi/tree/shipped/yazi-config/preset
+# ============================================================
+
+[services]
+
+# =========================================
+# SFTP 远程文件访问
+# =========================================
+
+# --- 示例: 使用 SSH Agent 认证 ---
+# [services.my-server]
+# type = "sftp"
+# host = "1.2.3.4"
+# user = "root"
+# port = 22
+
+# --- 示例: 使用密钥文件认证 ---
+# [services.my-server]
+# type     = "sftp"
+# host     = "1.2.3.4"
+# user     = "root"
+# port     = 22
+# key_file = "~/.ssh/id_rsa"
+# # 如果私钥有密码保护:
+# # key_passphrase = "my_passphrase"
+
+# --- 示例: 使用密码认证 ---
+# [services.my-server]
+# type     = "sftp"
+# host     = "1.2.3.4"
+# user     = "root"
+# port     = 22
+# password = "my_password"
+
+# --- 示例: 指定自定义 SSH Agent socket ---
+# [services.my-server]
+# type           = "sftp"
+# host           = "1.2.3.4"
+# user           = "root"
+# port           = 22
+# identity_agent = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# 使用方式:
+#   1. 命令行: yazi sftp://my-server
+#   2. keymap 快捷键:
+#      [[mgr.prepend_keymap]]
+#      on   = [ "g", "s" ]
+#      run  = "cd sftp://my-server"
+#      desc = "跳转到 my-server"
