@@ -79,11 +79,18 @@ RPROMPT='%F{magenta}%T%f'         # Right prompt: time
 # Plugins (if available)
 # ========================
 
-for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
-  for prefix in /usr/share/zsh/plugins /usr/local/share /usr/share; do
-    if [[ -f "$prefix/$plugin/$plugin.zsh" ]]; then
-      source "$prefix/$plugin/$plugin.zsh"
-      break
-    fi
-  done
+# fast-syntax-highlighting (faster async replacement)
+for prefix in /usr/share/zsh/plugins /usr/local/share /usr/share; do
+  if [[ -f "$prefix/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
+    source "$prefix/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+    break
+  fi
+done
+
+# zsh-autosuggestions
+for prefix in /usr/share/zsh/plugins /usr/local/share /usr/share; do
+  if [[ -f "$prefix/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source "$prefix/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    break
+  fi
 done
