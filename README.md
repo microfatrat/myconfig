@@ -10,7 +10,7 @@ Personal dotfiles — Zsh shell config + [komorebi](https://github.com/LGUG2Z/ko
 myconfig/
 ├── .zshrc                     # Zsh shell configuration
 ├── README.md
-├── komorebi/
+├── komorebiconf/
 │   ├── komorebi.json          # Tiling window manager config
 │   ├── komorebi.bar.json      # Status bar config
 │   └── whkdrc                 # Hotkey bindings → ~/.config/whkdrc
@@ -47,19 +47,19 @@ New-Item -ItemType Directory -Path "$HOME\.config" -Force | Out-Null
 # Window manager
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\komorebi.json" `
-    -Target "$HOME\myconfig\komorebi\komorebi.json" `
+    -Target "$HOME\myconfig\komorebiconf\komorebi.json" `
     -Force
 
 # Status bar
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\komorebi.bar.json" `
-    -Target "$HOME\myconfig\komorebi\komorebi.bar.json" `
+    -Target "$HOME\myconfig\komorebiconf\komorebi.bar.json" `
     -Force
 
 # Hotkeys
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\.config\whkdrc" `
-    -Target "$HOME\myconfig\komorebi\whkdrc" `
+    -Target "$HOME\myconfig\komorebiconf\whkdrc" `
     -Force
 ```
 
