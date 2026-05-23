@@ -6,17 +6,11 @@
         { "name": "2:term", "layout": "BSP" },
         {
           "name": "3:code",
-          "layout": "BSP",
-          "workspace_rules": [
-            { "kind": "Exe", "matching_strategy": "Equals", "id": "Zed.exe" }
-          ]
+          "layout": "BSP"
         },
         {
           "name": "4:web",
-          "layout": "BSP",
-          "workspace_rules": [
-            { "kind": "Exe", "matching_strategy": "Equals", "id": "msedge.exe" }
-          ]
+          "layout": "BSP"
         },
         {
           "name": "5:chat",

@@ -232,8 +232,8 @@ Search paths: `/usr/share/zsh/plugins` → `/usr/local/share` → `/usr/share`
 |---|---|---|
 | `Alt+1` | home | — |
 | `Alt+2` | term | — |
-| `Alt+3` | code | `Zed.exe` |
-| `Alt+4` | web | `msedge.exe` |
+| `Alt+3` | code | — |
+| `Alt+4` | web | — |
 | `Alt+5` | chat | `QQ.exe`, `WeChat.exe` |
 | `Alt+6` | game | — |
 | `Alt+7` | misc | — |
@@ -283,7 +283,7 @@ Search paths: `/usr/share/zsh/plugins` → `/usr/local/share` → `/usr/share`
 | Media | Enabled |
 | Storage | Enabled |
 | Memory | Enabled |
-| Network | Enabled, show activity + total |
+| Network | Enabled, show activity, no total |
 | Date | `DayDateMonthYear` format |
 | Time | `TwentyFourHour` format |
 | Battery | Disabled (desktop) |
