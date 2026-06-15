@@ -1,35 +1,39 @@
 # MyConfig
 
-Personal dotfiles — Zsh shell config + [komorebi](https://github.com/LGUG2Z/komorebi) tiling window manager config for Windows.
+个人配置文件仓库，包含 Zsh、komorebi、Yazi、Ableton Live / SMK25 II 的配置。
 
 ---
 
-## Directory Structure
+## 目录结构
 
 ```
 myconfig/
-├── .zshrc                     # Zsh shell configuration
-├── README.md
+├── .zshrc                          # Zsh Shell 配置
 ├── komorebiconf/
-│   ├── komorebi.json          # Tiling window manager config
-│   ├── komorebi.bar.json      # Status bar config
-│   └── whkdrc                 # Hotkey bindings → ~/.config/whkdrc
-└── yaziconf/
-    ├── yazi.toml              # General settings
-    ├── keymap.toml            # Key bindings
-    ├── theme.toml             # Color scheme
-    └── vfs.toml               # Virtual file system (SFTP etc.)
+│   ├── komorebi.json               # 窗口管理器主配置
+│   ├── komorebi.bar.json           # 状态栏配置
+│   └── whkdrc                      # 快捷键绑定 → ~/.config/whkdrc
+├── yaziconf/
+│   ├── yazi.toml                   # Yazi 通用设置
+│   ├── keymap.toml                 # Yazi 快捷键
+│   ├── theme.toml                  # Yazi 主题配色
+│   └── vfs.toml                    # Yazi 虚拟文件系统 (SFTP)
+└── music/
+    ├── mysmk25iiconf.mkcII         # SMK25 II MIDI 键盘预设
+    └── abletonliveconf/
+        └── SMK25II/
+            └── UserConfiguration.txt  # Ableton Live SMK25 II 映射
 ```
 
 ---
 
-## Quick Setup
+## 快速部署
 
 ```bash
 git clone git@github.com:microfatrat/myconfig.git ~/myconfig
 ```
 
-### Zsh (.zshrc)
+### Zsh
 
 ```bash
 ln -sf ~/myconfig/.zshrc ~/.zshrc
@@ -39,256 +43,248 @@ source ~/.zshrc
 ### Komorebi
 
 ```powershell
-# 1. Create symlinks to map repo configs to komorebi's default paths
+# 1. 创建符号链接
 
-# Ensure the .config directory exists
+# 确保 .config 目录存在
 New-Item -ItemType Directory -Path "$HOME\.config" -Force | Out-Null
 
-# Window manager
+# 窗口管理器
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\komorebi.json" `
     -Target "$HOME\myconfig\komorebiconf\komorebi.json" `
     -Force
 
-# Status bar
+# 状态栏
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\komorebi.bar.json" `
     -Target "$HOME\myconfig\komorebiconf\komorebi.bar.json" `
     -Force
 
-# Hotkeys
+# 快捷键
 New-Item -ItemType SymbolicLink `
     -Path "$HOME\.config\whkdrc" `
     -Target "$HOME\myconfig\komorebiconf\whkdrc" `
     -Force
 ```
 
+```powershell
+# 2. 启动服务
+komorebic start          # 启动平铺窗口管理器
+komorebic bar start      # 启动状态栏
+whkd                     # 启动快捷键守护进程
+```
+
+```powershell
+# 3. 修改配置后热重载
+komorebic reload-configuration
+komorebic bar reload-configuration
+whkd -r                  # 重载快捷键
+```
+
+```powershell
+# 4. 设置开机自启（bar 和 whkd 跟随 komorebi 启动）
+komorebic enable-autostart
+
+# 然后编辑计划任务: taskschd.msc → 找到 komorebi → 将操作改为:
+#   "C:\Program Files\komorebi\bin\komorebic-no-console.exe" start --whkd --bar
+```
+
 ### Yazi
 
 ```powershell
-# yazi reads config from %APPDATA%\yazi\config\
+# yazi 从 %APPDATA%\yazi\config\ 读取配置
 New-Item -ItemType Directory -Path "$env:APPDATA\yazi\config" -Force | Out-Null
 
 New-Item -ItemType SymbolicLink `
     -Path "$env:APPDATA\yazi\config\yazi.toml" `
-    -Target "$HOME\myconfig\yaziconf\yazi.toml" `
-    -Force
+    -Target "$HOME\myconfig\yaziconf\yazi.toml" -Force
 
 New-Item -ItemType SymbolicLink `
     -Path "$env:APPDATA\yazi\config\keymap.toml" `
-    -Target "$HOME\myconfig\yaziconf\keymap.toml" `
-    -Force
+    -Target "$HOME\myconfig\yaziconf\keymap.toml" -Force
 
 New-Item -ItemType SymbolicLink `
     -Path "$env:APPDATA\yazi\config\theme.toml" `
-    -Target "$HOME\myconfig\yaziconf\theme.toml" `
-    -Force
+    -Target "$HOME\myconfig\yaziconf\theme.toml" -Force
 
 New-Item -ItemType SymbolicLink `
     -Path "$env:APPDATA\yazi\config\vfs.toml" `
-    -Target "$HOME\myconfig\yaziconf\vfs.toml" `
-    -Force
+    -Target "$HOME\myconfig\yaziconf\vfs.toml" -Force
 ```
 
-```powershell
-# 2. Start services
-komorebic start          # Start tiling window manager
-komorebic bar start      # Start status bar
-whkd                     # Start hotkey daemon
-```
+### Ableton Live / SMK25 II
 
 ```powershell
-# 3. Hot-reload after editing configs (no restart needed)
-komorebic reload-configuration
-komorebic bar reload-configuration
-whkd -r                  # Reload hotkey bindings
-```
+# 将 UserConfiguration.txt 放入 Ableton 的 User Remote Scripts 目录
+# 通常是 Documents\Ableton\User Library\Remote Scripts\SMK25II\
 
-```powershell
-# 4. Autostart (bar and whkd launch together with komorebi on login)
-
-# Enable komorebi's built-in autostart (creates a Windows Scheduled Task)
-komorebic enable-autostart
-
-# Then edit the scheduled task: add --whkd --bar to the arguments
-# Command: taskschd.msc  →  find "komorebi"  →  edit action to:
-#   "C:\Program Files\komorebi\bin\komorebic-no-console.exe" start --whkd --bar
+# SMK25 II 预设文件 mysmk25iiconf.mkcII 通过 MIDI Keyboard Center 加载
 ```
 
 ---
 
 ## .zshrc — Zsh Shell
 
-### Requirements
+### 依赖
 
 - **Zsh** 5.0+
-- Recommended packages:
+- 推荐安装：
 
 ```bash
-# Required for plugins
 sudo apt install zsh-fast-syntax-highlighting zsh-autosuggestions
-# Or on Arch
-sudo pacman -S zsh-fast-syntax-highlighting zsh-autosuggestions
 ```
 
-### Shell Options
+### Shell 选项
 
-| Feature | Behavior |
+| 功能 | 说明 |
 |---|---|
-| **History** | 10,000 entries, real-time sharing across terminals, duplicates filtered |
-| **Auto-cd** | Type a directory name to jump into it |
-| **Auto-pushd** | Directory stack managed automatically |
-| **Extended glob** | Advanced pattern matching (`^`, `#`, etc.) |
-| **Auto-correct** | Typos in commands corrected on the fly |
+| **历史记录** | 10000 条，跨终端实时共享，自动去重 |
+| **自动 cd** | 直接输入目录名即可跳转 |
+| **自动 pushd** | cd 时自动维护目录栈 |
+| **扩展 glob** | 支持 `^`、`#` 等高级通配符 |
+| **自动纠错** | 命令拼写错误时自动纠正 |
 
-### Completions
+### 补全系统
 
-- `compinit -C` for fast startup (skips security rechecks)
-- Case-insensitive matching with smart delimiter handling
-- Colored output matching `LS_COLORS`
+- `compinit -C` 跳过安全检查，快速启动
+- 大小写不敏感匹配 + 智能分隔符处理
+- 匹配 `LS_COLORS` 的彩色输出
 
-### Aliases
+### 别名
 
-#### File Listing
+#### 文件列表
 
-| Alias | Command | Notes |
-|---|---|---|
-| `ll` | `ls -alF` | Full detail with type indicators |
-| `la` | `ls -A` | All files except `.` and `..` |
-| `l` | `ls -CF` | Column view with type suffixes |
+| 别名 | 展开 |
+|---|---|
+| `ll` | `ls -alF` |
+| `la` | `ls -A` |
+| `l` | `ls -CF` |
 
-`ls` auto-colorizes based on OS (`--color=auto` on Linux, `-G` on macOS).
+`ls` 会根据系统自动彩色化（Linux `--color=auto`，macOS `-G`）。
 
-#### Safety (interactive + verbose)
+#### 安全操作（交互 + 详细）
 
-| Alias | Expands to |
+| 别名 | 展开 |
 |---|---|
 | `cp` | `cp -iv` |
 | `mv` | `mv -iv` |
 | `rm` | `rm -i` |
 | `mkdir` | `mkdir -p` |
 
-#### Navigation
+#### 导航
 
-| Alias | Action |
+| 别名 | 操作 |
 |---|---|
-| `..` | `cd ..` |
-| `...` | `cd ../..` |
-| `-` | Go back to previous directory (`cd -`) |
-| `d` | Show directory stack (`dirs -v`) |
+| `..` | 上一级目录 |
+| `...` | 上两级目录 |
+| `-` | 返回上一个目录 |
+| `d` | 显示目录栈 |
 
-#### Other
+#### 其他
 
-| Alias | Expands to |
+| 别名 | 展开 |
 |---|---|
 | `grep` | `grep --color=auto` |
 
-### Key Bindings
+### 快捷键
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `Home` | Beginning of line |
-| `End` | End of line |
-| `Delete` | Delete character |
-| `Ctrl+Right` | Forward one word |
-| `Ctrl+Left` | Backward one word |
-| `Ctrl+R` | Incremental history search |
+| `Home` | 行首 |
+| `End` | 行尾 |
+| `Delete` | 删除字符 |
+| `Ctrl+→` | 前进一个词 |
+| `Ctrl+←` | 后退一个词 |
+| `Ctrl+R` | 历史增量搜索 |
 
-### Prompt
+### 提示符
 
-- **Left**: `user@host` (cyan) `current_dir` (green) `%`/`#` (yellow)
-- **Right**: Current time (magenta)
+- **左侧**：`user@host` (青) `当前目录` (绿) `%`/`#` (黄)
+- **右侧**：当前时间 (紫)
 
-### Plugins (auto-loaded if installed)
+### 插件（有则自动加载）
 
-| Plugin | Package | Purpose |
+| 插件 | 包名 | 用途 |
 |---|---|---|
-| [fast-syntax-highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting) | `zsh-fast-syntax-highlighting` | Async syntax highlighting |
-| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | `zsh-autosuggestions` | Command suggestions from history |
-
-Search paths: `/usr/share/zsh/plugins` → `/usr/local/share` → `/usr/share`
+| [fast-syntax-highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting) | `zsh-fast-syntax-highlighting` | 异步语法高亮 |
+| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | `zsh-autosuggestions` | 历史命令建议 |
 
 ---
 
-## komorebi.json — Window Manager
+## Komorebi — 平铺窗口管理器
 
-### Requirements
+### 依赖
 
-- [komorebi](https://github.com/LGUG2Z/komorebi) (`winget install LGUG2Z.komorebi` or `scoop install komorebi`)
+```powershell
+winget install LGUG2Z.komorebi    # 窗口管理器 + 状态栏
+winget install LGUG2Z.whkd        # 快捷键守护进程
+```
 
-### Overview
+### komorebi.json — 窗口管理器配置
 
-| Setting | Value |
+| 设置 | 值 |
 |---|---|
-| **Layout** | BSP (Binary Space Partition) |
-| **Border** | Enabled, 4px width, offset -1, style `Square` (Win10 rect) |
-| **Padding** | Container 4px, workspace 4px |
-| **Animation** | 120ms, EaseInOutSine, 60fps |
-| **Cross-monitor move** | Swap |
+| **布局** | BSP（二叉空间分割） |
+| **边框** | 启用，宽 4px，偏移 -1，样式 `Square`（Win10 方角） |
+| **间距** | 容器 4px，工作区 4px |
+| **动画** | 120ms，EaseInOutSine，60fps |
+| **跨屏移动** | Swap（交换） |
 
-### Workspaces (7 total)
+#### 工作区（共 7 个）
 
-| Key | Name | Layout Rule |
+| 快捷键 | 名称 | 应用绑定 |
 |---|---|---|
 | `Alt+1` | home | — |
 | `Alt+2` | term | — |
 | `Alt+3` | code | — |
 | `Alt+4` | web | — |
-| `Alt+5` | chat | `QQ.exe`, `WeChat.exe` |
+| `Alt+5` | chat | QQ、WeChat |
 | `Alt+6` | game | — |
 | `Alt+7` | misc | — |
 
-### Border Colors
+#### 边框颜色
 
-| State | Color | Hex |
+| 状态 | 颜色 | 色值 |
 |---|---|---|
-| Single (focused) | Blue | `#89B4FA` |
-| Stack | Pink | `#F38BA8` |
-| Monocle | Green | `#A6E3A1` |
-| Unfocused | Grey | `#585B70` |
+| 聚焦 | 蓝 | `#89B4FA` |
+| 堆叠 | 粉 | `#F38BA8` |
+| 单窗口 | 绿 | `#A6E3A1` |
+| 失焦 | 灰 | `#585B70` |
 
-### Floating / Unmanaged Apps
+#### 浮动窗口
 
-| App | Rule |
+| 应用 | 规则 |
 |---|---|
-| Task Manager | `Taskmgr.exe` |
-| Settings | `ApplicationFrameHost.exe` + Title `设置` |
-| Calculator | `ApplicationFrameHost.exe` + Title `Calculator` |
-| Snipping Tool | `SnippingTool.exe` |
-| Steam popups | `steamwebhelper.exe` + Class `SDL_app` + Title starts `notificationtoasts` |
+| 任务管理器 | `Taskmgr.exe` |
+| 设置 | `ApplicationFrameHost.exe` + 标题 `设置` |
+| 计算器 | `ApplicationFrameHost.exe` + 标题 `Calculator` |
+| 截图工具 | `SnippingTool.exe` |
+| Steam 弹窗 | `steamwebhelper.exe` + 类 `SDL_app` + 标题开头 `notificationtoasts` |
 
----
+### komorebi.bar.json — 状态栏
 
-## komorebi.bar.json — Status Bar
+- **字体**：JetBrains Mono
+- **主题**：Base16-Ashes，强调色 `Base0D`
 
-### Requirements
+#### 左侧组件
 
-- [komorebi-bar](https://github.com/LGUG2Z/komorebi-bar) (same installer as komorebi)
-
-### Configuration
-
-- **Font**: JetBrains Mono
-- **Theme**: Base16-Ashes, accent `Base0D`
-
-#### Left widgets
-
-| Widget | Details |
+| 组件 | 详情 |
 |---|---|
-| Komorebi | Workspace list (non-empty shown), layout indicator, focused window (with icon) |
+| Komorebi | 工作区列表、布局名、当前窗口名（含图标） |
 
-#### Right widgets
+#### 右侧组件
 
-| Widget | Details |
+| 组件 | 详情 |
 |---|---|
-| Media | Enabled |
-| Storage | Enabled |
-| Memory | Enabled |
-| Network | Enabled, show activity, no total |
-| Date | `DayDateMonthYear` format |
-| Time | `TwentyFourHour` format |
-| Battery | Disabled (desktop) |
+| 媒体 | 启用 |
+| 存储 | 启用 |
+| 内存 | 启用 |
+| 网络 | 启用，仅显示实时活动 |
+| 日期 | `DayDateMonthYear` 格式 |
+| 时间 | 24 小时制 |
+| 电池 | 禁用（台式机） |
 
-### Start / Stop / Reload
+#### 启停
 
 ```powershell
 komorebic bar start
@@ -296,199 +292,166 @@ komorebic bar stop
 komorebic bar reload-configuration
 ```
 
----
+### whkdrc — 快捷键绑定
 
-## whkdrc — Hotkey Bindings
+#### 工作区
 
-### Requirements
-
-- [whkd](https://github.com/LGUG2Z/whkd) (`winget install LGUG2Z.whkd` or `scoop install whkd`)
-
-### Workspace
-
-| Shortcut | Action |
+| 快捷键 | 操作 |
 |---|---|
-| `Alt + 1-7` | Focus workspace |
-| `Alt + Shift + 1-7` | Move window to workspace |
-| `Alt + Ctrl + 1-7` | Send to workspace & follow |
+| `Alt + 1-7` | 切换工作区 |
+| `Alt + Shift + 1-7` | 移动窗口到工作区 |
+| `Alt + Ctrl + 1-7` | 发送到工作区并跟随 |
 
-### Focus / Move / Resize
+#### 焦点 / 移动 / 调整
 
-| Shortcut | Action |
+| 快捷键 | 操作 |
 |---|---|
-| `Alt + H/J/K/L` | Focus left/down/up/right |
-| `Alt + Shift + H/J/K/L` | Move window |
-| `Alt + Ctrl + H/J/K/L` | Resize window |
-| `Alt + [` / `]` | Cycle focus previous/next |
-| `Alt + Shift + [` / `]` | Cycle stack previous/next |
+| `Alt + H/J/K/L` | 焦点 左/下/上/右 |
+| `Alt + Shift + H/J/K/L` | 移动窗口 |
+| `Alt + Ctrl + H/J/K/L` | 调整窗口大小 |
+| `Alt + [` / `]` | 循环焦点 上一个/下一个 |
+| `Alt + Shift + [` / `]` | 循环堆叠 上一个/下一个 |
 
-### Layout
+#### 布局
 
-| Shortcut | Action |
+| 快捷键 | 操作 |
 |---|---|
-| `Alt + V` | BSP layout |
-| `Alt + Shift + V` | Vertical stack |
-| `Alt + M` | Toggle monocle |
-| `Alt + F` | Toggle float |
-| `Alt + Shift + F` | Add float rule |
-| `Alt + X` | Flip layout horizontally |
-| `Alt + Shift + X` | Flip layout vertically |
+| `Alt + V` | BSP 布局 |
+| `Alt + Shift + V` | 垂直堆叠 |
+| `Alt + M` | 切换单窗口 |
+| `Alt + F` | 切换浮动 |
+| `Alt + Shift + F` | 添加浮动规则 |
+| `Alt + X` | 水平翻转布局 |
+| `Alt + Shift + X` | 垂直翻转布局 |
 
-### Window & Misc
+#### 窗口 / 其他
 
-| Shortcut | Action |
+| 快捷键 | 操作 |
 |---|---|
-| `Alt + Return` | Promote window |
-| `Alt + Q` | Close window |
-| `Alt + Shift + Q` | Force focus |
-| `Alt + R` | Retile |
-| `Alt + Shift + Space` | Pause/Resume tiling |
-| `Alt + S` | Save workspace layout |
-| `Alt + Shift + S` | Load workspace layout |
-
-### Start / Reload
-
-```powershell
-whkd                    # Start daemon
-whkd -r                 # Reload config
-```
+| `Alt + Return` | 提升窗口 |
+| `Alt + Q` | 关闭窗口 |
+| `Alt + Shift + Q` | 强制聚焦 |
+| `Alt + R` | 重新排列 |
+| `Alt + Shift + Space` | 暂停/恢复平铺 |
+| `Alt + S` | 保存工作区布局 |
+| `Alt + Shift + S` | 加载工作区布局 |
 
 ---
 
-## Yazi — Terminal File Manager
+## Yazi — 终端文件管理器
 
-[yazi](https://github.com/sxyazi/yazi) is a blazing-fast terminal file manager written in Rust.
-Config files live in `yaziconf/`.
-
-### Requirements
+### 依赖
 
 ```powershell
-# Install via winget or scoop
-winget install sxyazi.yazi
-# scoop install yazi
+winget install sxyazi.yazi          # 本体
+winget install sharkdp.fd           # fd — 快速搜索
+winget install BurntSushi.ripgrep   # rg — 内容搜索
+winget install junegunn.fzf         # fzf — 模糊查找
+winget install ajeetdsouza.zoxide   # zoxide — 目录跳转
 ```
 
-Optional tools for full preview/plugin support:
+### yazi.toml — 通用设置
 
-```powershell
-winget install sharkdp.fd          # fd — faster file search
-winget install BurntSushi.ripgrep  # rg — content search
-winget install junegunn.fzf        # fzf — fuzzy finder
-winget install ajeetdsouza.zoxide  # zoxide — smart directory jumper
-```
-
-### yazi.toml — General Settings
-
-| Section | Key Settings |
+| 分类 | 设置 |
 |---|---|
-| **Layout** | 3-column (parent 1 : current 4 : preview 3) |
-| **Sort** | Alphabetical, dirs first, case-insensitive |
-| **Hidden** | Hidden files hidden by default (`.` to toggle) |
-| **Editor** | `zed` on Windows, `$EDITOR` on Unix |
-| **Preview** | Max 600×900px, no text wrap, catmull-rom image scaling |
-| **Mouse** | Click, scroll, drag enabled |
+| **布局** | 三栏（父目录 1 : 当前 4 : 预览 3） |
+| **排序** | 按字母排序，目录优先，不区分大小写 |
+| **隐藏文件** | 默认隐藏（`.` 切换） |
+| **编辑器** | Windows 用 `zed`，Unix 用 `$EDITOR` |
+| **预览** | 最大 600×900px，不换行，catmull-rom 缩放 |
+| **鼠标** | 点击、滚动、拖拽 |
 
-### keymap.toml — Key Bindings
+### keymap.toml — 快捷键
 
-#### Navigation
+#### 导航
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `j` / `k` | Down / up |
-| `h` / `l` | Parent / enter directory |
-| `H` / `L` | Back / forward in history |
-| `gg` / `G` | Top / bottom |
-| `Ctrl+u` / `Ctrl+d` | Scroll half page |
-| `Ctrl+f` / `Ctrl+b` | Scroll full page |
-| `K` / `J` | Scroll preview up / down |
+| `j` / `k` | 下 / 上 |
+| `h` / `l` | 返回上级 / 进入目录 |
+| `H` / `L` | 后退 / 前进（历史） |
+| `gg` / `G` | 顶部 / 底部 |
+| `Ctrl+u` / `Ctrl+d` | 滚动半页 |
+| `K` / `J` | 预览区上滚 / 下滚 |
 
-#### Selection
+#### 选择
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `Space` | Toggle select |
-| `v` / `V` | Visual mode / unset mode |
-| `Ctrl+a` | Select all |
-| `Ctrl+r` | Invert selection |
+| `Space` | 切换选中 |
+| `v` / `V` | 可视模式 / 取消选择模式 |
+| `Ctrl+a` | 全选 |
+| `Ctrl+r` | 反选 |
 
-#### File Operations
+#### 文件操作
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `Enter` / `o` | Open file |
-| `Shift+Enter` / `O` | Open with picker |
-| `y` / `x` | Yank (copy) / cut |
-| `p` / `P` | Paste / paste force |
-| `d` / `D` | Trash / delete permanently |
-| `a` | Create file or dir (`name/`) |
-| `r` | Rename |
-| `-` / `_` | Symlink (absolute / relative) |
+| `Enter` / `o` | 打开文件 |
+| `O` | 选择打开方式 |
+| `y` / `x` | 复制 / 剪切 |
+| `p` / `P` | 粘贴 / 强制粘贴 |
+| `d` / `D` | 回收站 / 永久删除 |
+| `a` | 创建文件（以 `/` 结尾则创建目录） |
+| `r` | 重命名 |
+| `-` / `_` | 符号链接（绝对 / 相对路径） |
 
-#### Search & Filter
+#### 搜索与过滤
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `/` / `?` | Find forward / backward |
-| `n` / `N` | Next / previous match |
-| `f` | Filter current directory |
-| `s` | Search by filename (fd) |
-| `S` | Search by content (rg) |
-| `z` | FZF jump |
-| `Z` | Zoxide directory jump |
+| `/` / `?` | 向下 / 向上查找 |
+| `n` / `N` | 下一个 / 上一个匹配 |
+| `f` | 过滤当前目录 |
+| `s` | 按文件名搜索（fd） |
+| `S` | 按内容搜索（rg） |
+| `z` | FZF 快速跳转 |
+| `Z` | Zoxide 目录跳转 |
 
-#### Tabs & Misc
+#### 标签页 / 其他
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `1-9` | Switch to tab N |
-| `[` / `]` | Previous / next tab |
-| `{` / `}` | Swap tab left / right |
-| `tt` | New tab (current dir) |
-| `Tab` | Show file info |
-| `w` | Task manager |
-| `~` / `F1` | Help |
-| `q` / `Q` | Quit / quit (no cwd save) |
-| `:` / `;` | Shell command (block / async) |
-| `Esc` / `Ctrl+[` | Escape / cancel |
+| `1-9` | 切换到标签页 N |
+| `[` / `]` | 上一个 / 下一个标签页 |
+| `{` / `}` | 左移 / 右移标签页 |
+| `tt` | 新建标签页（当前目录） |
+| `Tab` | 文件信息 |
+| `w` | 任务管理器 |
+| `~` / `F1` | 帮助 |
+| `q` / `Q` | 退出 / 退出不保存 cwd |
+| `:` / `;` | Shell 命令（阻塞 / 异步） |
 
-#### Copy Paths
+#### 路径复制
 
-| Key | Action |
+| 按键 | 操作 |
 |---|---|
-| `cc` | Copy absolute path |
-| `cd` | Copy directory path |
-| `cf` | Copy filename |
-| `cn` | Copy name without extension |
+| `cc` | 复制绝对路径 |
+| `cd` | 复制目录路径 |
+| `cf` | 复制文件名 |
+| `cn` | 复制文件名（不含扩展名） |
 
-#### Sort Modes
+#### 排序
 
-| Key | Action |
+| 按键 | 排序 |
 |---|---|
-| `,a` / `,A` | Alphabetical (asc / desc) |
-| `,m` / `,M` | Modified time |
-| `,b` / `,B` | Created time |
-| `,s` / `,S` | Size |
-| `,e` / `,E` | Extension |
-| `,n` / `,N` | Natural order |
-| `,r` | Random |
+| `,a` / `,A` | 字母 正序/倒序 |
+| `,m` / `,M` | 修改时间 |
+| `,b` / `,B` | 创建时间 |
+| `,s` / `,S` | 文件大小 |
+| `,e` / `,E` | 扩展名 |
+| `,n` / `,N` | 自然排序 |
+| `,r` | 随机 |
 
-### theme.toml — Color Scheme
+### theme.toml — 主题配色
 
-- **CWD**: Teal (`#81c8be`)
-- **Dir icons**: Blue (`#7da6d9`)
-- **Executable files**: Green
-- **Images**: Yellow
-- **Media**: Purple (`#c4a0d4`)
-- **Archives**: Red
-- **Documents**: Teal
-- **Tab bar**: Blue active, grey inactive, with rounded separator glyphs
-- **Which-key panel**: 3 columns, purple descriptions
+- **当前目录**：青绿 (`#81c8be`)，**目录图标**：蓝 (`#7da6d9`)
+- **可执行文件**：绿，**图片**：黄，**媒体**：紫 (`#c4a0d4`)
+- **压缩包**：红，**文档**：青绿
+- **标签栏**：蓝激活/灰未激活，圆角分隔符
+- **Which-key 面板**：三列，紫色描述
 
-Special directory icons: `.config` (gear), `.git` (branch), Desktop, Documents, Downloads, Music, Pictures, Videos.
-
-### vfs.toml — Virtual File System
-
-Placeholder for SFTP remote server configs. Uncomment and fill in to mount remote servers:
+### vfs.toml — 虚拟文件系统
 
 ```toml
 [services.my-server]
@@ -498,10 +461,42 @@ user = "root"
 port = 22
 ```
 
-Then access via `yazi sftp://my-server` or bind to a key.
+通过 `yazi sftp://my-server` 访问。
 
 ---
 
-## License
+## Music — Ableton Live / SMK25 II
 
-This is a personal configuration — feel free to use, modify, and share.
+### 依赖
+
+- Ableton Live
+- SMK25 II MIDI 控制器 + USB 连接
+- [MIDI Keyboard Center](https://m-audio.com/support/downloads)（可选，用于加载 .mkcII 预设）
+
+### UserConfiguration.txt
+
+放入 Ableton 的 User Remote Scripts 目录：
+`Documents\Ableton\User Library\Remote Scripts\SMK25II\`，
+然后在 Live → MIDI 设置中选择 `SMK25II` 控制面板。
+
+#### 映射概要
+
+| 分组 | 控制项 | 详情 |
+|---|---|---|
+| **打击垫** | 16 个 Pad | Note 36-51 |
+| **编码器** | 8 个 Encoder | CC 30-37，Absolute 模式 |
+| **推子** | 8 个 Volume Slider | CC 38-45 |
+| **走带控制** | Play / Stop / Rec / Rwd / Ffwd | CC 54-58 |
+| **音轨开关** | Track Arm 1-4 | CC 46-49 |
+| **翻页** | Prev / Next bank | CC 59-60 |
+| **循环** | Loop | CC 61 |
+
+### mysmk25iiconf.mkcII
+
+SMK25 II 的 MIDI Keyboard Center 预设文件。打开 MIDI Keyboard Center，连接键盘后导入此文件即可将按键映射写入键盘硬件。
+
+---
+
+## 许可
+
+个人配置，随意使用、修改、分享。
