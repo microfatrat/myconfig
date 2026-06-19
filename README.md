@@ -131,7 +131,7 @@ New-Item -ItemType SymbolicLink `
 - 推荐安装：
 
 ```bash
-sudo apt install zsh-fast-syntax-highlighting zsh-autosuggestions
+sudo apt install zsh-syntax-highlighting zsh-autosuggestions
 ```
 
 ### Shell 选项
@@ -206,7 +206,7 @@ sudo apt install zsh-fast-syntax-highlighting zsh-autosuggestions
 
 | 插件 | 包名 | 用途 |
 |---|---|---|
-| [fast-syntax-highlighting](https://github.com/zdharma-continuum/fast-syntax-highlighting) | `zsh-fast-syntax-highlighting` | 异步语法高亮 |
+| [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | `zsh-syntax-highlighting` | 语法高亮 |
 | [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | `zsh-autosuggestions` | 历史命令建议 |
 
 ---
